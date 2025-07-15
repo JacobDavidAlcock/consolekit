@@ -14,19 +14,9 @@ Intel is designed to be:
 
 ### Prerequisites
 
-1. Install Ollama:
-```bash
-# macOS
-brew install ollama
+**Zero setup required!** Intel automatically installs and manages Ollama for you.
 
-# Linux  
-curl -fsSL https://ollama.ai/install.sh | sh
-
-# Start Ollama service
-ollama serve
-```
-
-2. Add Intel to your application:
+1. Add Intel to your application:
 ```go
 import "github.com/jacobdavidalcock/consolekit/pkg/intel"
 
@@ -41,7 +31,7 @@ func main() {
 }
 ```
 
-3. Use Intel commands:
+2. Use Intel commands (Ollama installs automatically on first use):
 ```bash
 mytool > intel start
 mytool > intel analyze
@@ -299,14 +289,16 @@ if len(findings) > 0 {
 ### Common Issues
 
 **Intel not starting**
-- Ensure Ollama is running: `ollama serve`
-- Check Ollama URL in configuration
-- Verify model availability: `ollama list`
+- Intel automatically installs and starts Ollama - wait for initial setup to complete
+- Check internet connection for Ollama installation
+- Ensure sufficient disk space (Ollama + models need 2-6GB)
+- Try `intel status` to check system state
 
 **Model download failing**
 - Check internet connection
 - Ensure sufficient disk space (models are 1-4GB)
-- Try manual download: `ollama pull phi3:3.8b`
+- Intel automatically retries failed downloads
+- Models download automatically on first use
 
 **Poor AI responses**
 - Improve domain knowledge in context provider
@@ -326,11 +318,68 @@ if len(findings) > 0 {
 3. Test with minimal context to isolate issues
 4. Try different models to compare results
 
-## Future Enhancements
+## Recent Improvements
 
-- **Proactive suggestions**: Automatic recommendations during tool usage
-- **Learning from sessions**: Improved suggestions based on user patterns  
-- **Multi-model support**: Use different models for different types of queries
-- **Cloud model support**: Integration with cloud-based LLM APIs
-- **Voice interface**: Voice commands and responses
-- **Plugin system**: Third-party Intel extensions
+Intel has been enhanced with professional CLI experience features:
+
+### Response Quality & Formatting
+- **Claude-style responses**: Concise, CLI-optimized output (max 150 words)
+- **Smart cleaning**: Removes verbose LLM artifacts and redundant phrases
+- **Professional formatting**: Structured markdown with ASCII art
+- **Intelligent truncation**: Natural break points with truncation indicators
+
+### User Experience
+- **Smooth animations**: Professional spinner animations during processing
+- **Tab completion**: Full autocomplete for all intel subcommands
+- **Consistent styling**: Professional status indicators (✓, ❌, ⚠️, ℹ️)
+- **Better error handling**: Helpful error messages with suggested solutions
+
+### Advanced Features
+- **Context awareness**: Prompt-specific context inclusion (analyze vs explain)
+- **Response optimization**: Removes filler words and academic language
+- **Professional styling**: Consistent ASCII art and visual hierarchy
+- **Smart model management**: Improved RAM detection and model suggestions
+
+## Styling Guidelines
+
+Intel follows professional CLI styling conventions:
+
+### Status Indicators
+- `✓` Success operations
+- `❌` Error conditions  
+- `⚠️` Warning messages
+- `ℹ️` Informational content
+
+### Formatting Patterns
+- **Headers**: Box-drawing characters for structure
+- **Bullet points**: `▸` for professional appearance
+- **Code blocks**: Bordered ASCII boxes
+- **Emphasis**: Minimal, strategic use of color
+
+## Command Reference
+
+### Core Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `intel start` | Initialize system and download models | `intel start` |
+| `intel analyze [query]` | Analyze session or specific query | `intel analyze` |
+| `intel suggest [context]` | Get AI suggestions for next steps | `intel suggest` |
+| `intel explain <topic>` | Detailed explanations of concepts | `intel explain sql injection` |
+| `intel status` | Show system status and configuration | `intel status` |
+
+### Context Management
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `intel context clear` | Clear session context | `intel context clear` |
+| `intel context stats` | Show context statistics | `intel context stats` |
+| `intel context limit <n>` | Set context limit | `intel context limit 100` |
+
+### Validation & Help
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `intel validate model` | Validate current model | `intel validate model` |
+| `intel validate url` | Check Ollama connection | `intel validate url` |
+| `intel help` | Show help information | `intel help` |

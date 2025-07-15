@@ -501,4 +501,71 @@ func GetConfigDir(appName string) (string, error)
 
 Returns a configuration directory path.
 
+## Package: intel
+
+The `intel` package provides AI assistant functionality with local LLM integration.
+
+### func QuickSetup
+
+```go
+func QuickSetup(app *console.Console, appName, domain, knowledge string)
+```
+
+One-line setup for Intel AI assistant with domain expertise.
+
+### type IntelSystem
+
+```go
+type IntelSystem struct {
+    // contains filtered or unexported fields
+}
+```
+
+Core AI assistant system coordinator.
+
+### type ContextProvider
+
+```go
+type ContextProvider interface {
+    Name() string
+    GetContext() (*ContextData, error)
+    GetDomainKnowledge() string
+    GetCurrentState() map[string]interface{}
+    GetPromptTemplates() map[string]string
+}
+```
+
+Interface for providing domain-specific context to the AI system.
+
+### type Config
+
+```go
+type Config struct {
+    Model         string
+    AutoDownload  bool
+    Proactive     bool
+    ContextDepth  int
+    SystemPrompt  string
+    CustomPrompts map[string]string
+    OllamaURL     string
+    Timeout       time.Duration
+}
+```
+
+Configuration for the Intel AI system.
+
+### Standard Commands
+
+Intel automatically registers these commands:
+- `intel start` - Initialize the AI system
+- `intel analyze [query]` - Analyze current session
+- `intel suggest [context]` - Get AI suggestions
+- `intel explain <topic>` - Detailed explanations
+- `intel status` - System status
+- `intel help` - Command reference
+
+For detailed Intel documentation, see the [Intel AI Guide](intel.md).
+
+---
+
 This API reference covers the main public interfaces of ConsoleKit. For usage examples, see the [Getting Started Guide](getting-started.md).
