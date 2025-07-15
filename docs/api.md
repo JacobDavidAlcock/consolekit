@@ -90,6 +90,58 @@ type Handler interface {
 
 Interface that all command handlers must implement.
 
+### type Completer
+
+```go
+type Completer interface {
+    Complete(args []string, cursorPos int) []string
+}
+```
+
+Optional interface for commands that provide custom tab completion.
+
+### type CompletionBuilder
+
+```go
+type CompletionBuilder struct {
+    // contains filtered or unexported fields
+}
+```
+
+Fluent builder for creating argument completion configurations.
+
+#### func NewCompletionBuilder
+
+```go
+func NewCompletionBuilder() *CompletionBuilder
+```
+
+Creates a new completion builder.
+
+#### func (*CompletionBuilder) AddPosition
+
+```go
+func (cb *CompletionBuilder) AddPosition(pos int, options ...string) *CompletionBuilder
+```
+
+Adds static completion options for a specific argument position.
+
+#### func (*CompletionBuilder) AddDynamicPosition
+
+```go
+func (cb *CompletionBuilder) AddDynamicPosition(pos int, generator func() []string) *CompletionBuilder
+```
+
+Adds dynamic completion for a specific argument position.
+
+#### func (*CompletionBuilder) AddFlag
+
+```go
+func (cb *CompletionBuilder) AddFlag(flag string, options ...string) *CompletionBuilder
+```
+
+Adds completion options for a command flag.
+
 ### type HandlerFunc
 
 ```go

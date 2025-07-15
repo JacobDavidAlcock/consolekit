@@ -74,6 +74,54 @@ func registerCommands(app *console.Console, state *config.State) {
 		fmt.Println(example)
 		return nil
 	}), "Generate example configuration file")
+	
+	// Enhanced tab completion examples
+	registerCompletionExamples(app, state)
+}
+
+// registerCompletionExamples demonstrates the new tab completion features
+func registerCompletionExamples(app *console.Console, state *config.State) {
+	// Example 1: Dynamic completion with Completer interface
+	app.AddCommandWithCompleter("test", &TestCommand{state: state}, "Test with dynamic completion")
+	
+	// Example 2: Static completion with CompletionBuilder
+	builder := command.NewCompletionBuilder().
+		AddPosition(0, "endpoints", "subdomains", "directories", "files").
+		AddFlag("--threads", "1", "5", "10", "20", "50").
+		AddFlag("--timeout", "30", "60", "120", "300").
+		AddFlag("--output", "json", "yaml", "text", "table").
+		AddFlag("--verbose", "true", "false")
+	
+	app.AddCommandWithBuilder("scan", &ScanCommand{state: state}, "Scan with static completion", builder)
+	
+	// Example 3: Quick patterns for common use cases
+	ext := app.Extensions()
+	ext.SecurityTest("pentest", &PentestCommand{state: state}, "Security testing with predefined patterns")
+	ext.HTTPClient("request", &RequestCommand{state: state}, "HTTP client with predefined patterns")
+	
+	// Example 4: Fluent interface
+	app.Fluent().
+		Add("analyze", &AnalyzeCommand{state: state}).
+		Desc("Analyze target with fluent completion").
+		Arg(0, "web", "api", "mobile", "network").
+		Flag("--depth", "shallow", "medium", "deep").
+		Flag("--format", "json", "xml", "yaml").
+		SecurityFlags().
+		Register()
+	
+	// Example 5: Dynamic external data
+	app.Fluent().
+		Add("connect", &ConnectCommand{state: state}).
+		Desc("Connect to services with dynamic completion").
+		DynamicArg(0, func() []string {
+			// Simulate fetching from external source
+			return []string{"database", "cache", "queue", "api"}
+		}).
+		DynamicFlag("--env", func() []string {
+			// Simulate environment detection
+			return []string{"development", "staging", "production"}
+		}).
+		Register()
 }
 
 // SetCommand handles setting configuration values
@@ -161,4 +209,126 @@ func (c *DemoCommand) Execute(args []string) error {
 
 func (c *DemoCommand) Description() string {
 	return "Run a demonstration of ConsoleKit features"
+}
+
+// New completion example commands
+
+// TestCommand implements the Completer interface for dynamic completion
+type TestCommand struct {
+	state *config.State
+}
+
+func (c *TestCommand) Execute(args []string) error {
+	fmt.Printf("🧪 Testing: %v\n", args)
+	if len(args) > 0 {
+		c.state.Set("last_test_type", args[0])
+	}
+	return nil
+}
+
+func (c *TestCommand) Description() string {
+	return "Test with dynamic tab completion"
+}
+
+// Complete provides dynamic completion based on current context
+func (c *TestCommand) Complete(args []string, cursorPos int) []string {
+	switch len(args) {
+	case 0:
+		// First argument: test types
+		return []string{"sql", "xss", "nosql", "ldap", "command", "xxe", "ssrf"}
+	case 1:
+		// Second argument: depends on first argument
+		switch args[0] {
+		case "sql":
+			return []string{"union", "boolean", "time", "error"}
+		case "xss":
+			return []string{"reflected", "stored", "dom"}
+		case "nosql":
+			return []string{"mongodb", "couchdb", "redis"}
+		default:
+			return []string{"--target", "--threads", "--timeout"}
+		}
+	default:
+		// Additional flags
+		return []string{"--verbose", "--quiet", "--output", "--format"}
+	}
+}
+
+// ScanCommand uses static completion
+type ScanCommand struct {
+	state *config.State
+}
+
+func (c *ScanCommand) Execute(args []string) error {
+	fmt.Printf("🔍 Scanning: %v\n", args)
+	if len(args) > 0 {
+		c.state.Set("last_scan_target", args[0])
+	}
+	return nil
+}
+
+func (c *ScanCommand) Description() string {
+	return "Scan with static tab completion"
+}
+
+// PentestCommand uses security testing pattern
+type PentestCommand struct {
+	state *config.State
+}
+
+func (c *PentestCommand) Execute(args []string) error {
+	fmt.Printf("🛡️ Penetration testing: %v\n", args)
+	return nil
+}
+
+func (c *PentestCommand) Description() string {
+	return "Penetration testing with predefined patterns"
+}
+
+// RequestCommand uses HTTP client pattern
+type RequestCommand struct {
+	state *config.State
+}
+
+func (c *RequestCommand) Execute(args []string) error {
+	fmt.Printf("🌐 HTTP request: %v\n", args)
+	return nil
+}
+
+func (c *RequestCommand) Description() string {
+	return "HTTP client with predefined patterns"
+}
+
+// AnalyzeCommand uses fluent interface
+type AnalyzeCommand struct {
+	state *config.State
+}
+
+func (c *AnalyzeCommand) Execute(args []string) error {
+	fmt.Printf("📊 Analyzing: %v\n", args)
+	if len(args) > 0 {
+		c.state.Set("last_analysis_type", args[0])
+	}
+	return nil
+}
+
+func (c *AnalyzeCommand) Description() string {
+	return "Analyze with fluent interface completion"
+}
+
+// ConnectCommand uses dynamic external data
+type ConnectCommand struct {
+	state *config.State
+}
+
+func (c *ConnectCommand) Execute(args []string) error {
+	fmt.Printf("🔌 Connecting: %v\n", args)
+	if len(args) > 0 {
+		c.state.Set("last_connection", args[0])
+	}
+	return nil
+}
+
+func (c *ConnectCommand) Description() string {
+	return "Connect with dynamic completion from external data"
 }

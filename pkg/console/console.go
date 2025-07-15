@@ -46,6 +46,31 @@ func (c *Console) AddCommand(name string, handler command.Handler, description s
 	c.Commands.Register(name, handler, description)
 }
 
+// AddCommandWithCompletion registers a command with custom completion
+func (c *Console) AddCommandWithCompletion(name string, handler command.Handler, description string, completions map[int]command.ArgumentCompletion) {
+	c.Commands.RegisterWithCompletion(name, handler, description, completions)
+}
+
+// AddCommandWithCompleter registers a command that implements the Completer interface
+func (c *Console) AddCommandWithCompleter(name string, handler command.Handler, description string) {
+	c.Commands.RegisterWithCompleter(name, handler, description)
+}
+
+// AddCommandWithBuilder registers a command using a CompletionBuilder
+func (c *Console) AddCommandWithBuilder(name string, handler command.Handler, description string, builder *command.CompletionBuilder) {
+	c.Commands.RegisterWithBuilder(name, handler, description, builder)
+}
+
+// Fluent returns a fluent interface for command registration
+func (c *Console) Fluent() *command.FluentRegistry {
+	return command.NewFluentRegistry(c.Commands)
+}
+
+// Extensions returns registry extensions for quick registration patterns
+func (c *Console) Extensions() *command.RegistryExtensions {
+	return command.NewRegistryExtensions(c.Commands)
+}
+
 // AddCompleter adds tab completion for a command
 func (c *Console) AddCompleter(completer readline.PrefixCompleterInterface) {
 	// This will be set when initializing readline
