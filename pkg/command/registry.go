@@ -74,7 +74,48 @@ func (r *Registry) BuildCompleter() readline.PrefixCompleterInterface {
 	var items []readline.PrefixCompleterInterface
 
 	for name := range r.commands {
-		items = append(items, readline.PcItem(name))
+		// Create subcommand completions for specific commands
+		switch name {
+		case "intel":
+			// Add Intel subcommands with proper nesting
+			items = append(items, readline.PcItem("intel",
+				readline.PcItem("start"),
+				readline.PcItem("analyze"),
+				readline.PcItem("suggest"),
+				readline.PcItem("explain"),
+				readline.PcItem("status"),
+				readline.PcItem("context",
+					readline.PcItem("clear"),
+					readline.PcItem("stats"),
+					readline.PcItem("limit"),
+				),
+				readline.PcItem("validate",
+					readline.PcItem("model"),
+					readline.PcItem("url"),
+					readline.PcItem("rules"),
+				),
+				readline.PcItem("help",
+					readline.PcItem("errors"),
+				),
+			))
+		case "show":
+			// Add show subcommands with proper nesting
+			items = append(items, readline.PcItem("show",
+				readline.PcItem("config"),
+				readline.PcItem("session"),
+				readline.PcItem("findings"),
+			))
+		case "set":
+			// Add set subcommands with proper nesting
+			items = append(items, readline.PcItem("set",
+				readline.PcItem("target"),
+				readline.PcItem("timeout"),
+				readline.PcItem("verbose"),
+			))
+		default:
+			// Regular commands without subcommands
+			items = append(items, readline.PcItem(name))
+		}
 	}
 
 	// Add built-in commands

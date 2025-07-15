@@ -51,6 +51,17 @@ func (c *Console) AddCompleter(completer readline.PrefixCompleterInterface) {
 	// This will be set when initializing readline
 }
 
+// EnableIntel adds Intel AI assistant capabilities to the console
+func (c *Console) EnableIntel(intel interface{}) {
+	// This will register Intel commands when the intel package is imported
+	// The interface{} type avoids circular dependencies
+	if intelSystem, ok := intel.(interface {
+		RegisterCommands(*Console)
+	}); ok {
+		intelSystem.RegisterCommands(c)
+	}
+}
+
 // SetBanner displays a startup banner
 func (c *Console) SetBanner(banner string) {
 	fmt.Println(output.Cyan(banner))
